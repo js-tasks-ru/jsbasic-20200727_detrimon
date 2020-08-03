@@ -5,4 +5,8 @@
  */
 function isEmpty(obj) {
   // ваш код...
+  for (let elem in obj) {
+    return false;
+  }
+  return true;
 }
