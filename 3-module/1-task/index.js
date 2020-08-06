@@ -3,5 +3,15 @@
  * @returns {string[]}  объект
  */
 function namify(users) {
-  // ваш код...
+  return users.map(elem => elem.name);
+
+  // Либо без Map ::
+
+  // let aNames = [];
+
+  // for (let elem of users) {
+  //   aNames.push(elem.name);
+  // }
+
+  // return aNames;
 }
