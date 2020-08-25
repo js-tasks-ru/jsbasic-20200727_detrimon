@@ -5,7 +5,7 @@ export default class Carousel {
     this.slides = slides;
     this.elem = this._makeProductCardDOM(slides);
 
-    this._fnMakePlusEvent();
+    this._makePlusEvent();
 
     this._initCarousel(slides.length);
   }
@@ -89,7 +89,7 @@ export default class Carousel {
     }
   }
 
-  _fnMakePlusEvent() {
+  _makePlusEvent() {
     let oElement = this.elem;
 
     oElement.addEventListener('click', (event) => {
