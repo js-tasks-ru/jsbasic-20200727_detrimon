@@ -40,12 +40,12 @@ export default class StepSlider {
 
   // Поиск ближайшей отметки относительно текущего положения бегунка (thumb). Результат помещаем в this.value
   _findClosestMark(nOffsetX) {
-    for (let i = 0, ln = this._aStepsX.length; i < ln; i++) {
-      if (this._aStepsX[i] > nOffsetX) {
-        (this._aStepsX[i] - nOffsetX > nOffsetX - this._aStepsX[i - 1]) ? (this.value = i - 1) : (this.value = i);
-        break;
-      }
+    let index = this._aStepsX.findIndex(elem => elem > nOffsetX);
+
+    if (this._aStepsX[index] - nOffsetX > nOffsetX - this._aStepsX[index - 1]) {
+      return this.value = index - 1;
     }
+    return this.value = index;
   }
 
   // Смещение слайдера к ближайшей отметке относительно this.value
@@ -96,8 +96,9 @@ export default class StepSlider {
 
         let leftPercents = Math.round((currentMouseXoffset) * 100 / (that._aStepsX[that._aStepsX.length - 1]));
 
-        thumb.style.left = (leftPercents >= 100 && '100%') || (leftPercents <= 0 && '0%') || `${leftPercents}%`;
-        progress.style.width = (leftPercents >= 100 && '100%') || (leftPercents <= 0 && '0%') || `${leftPercents}%`;
+        let persentValue = (leftPercents >= 100 && '100%') || (leftPercents <= 0 && '0%') || `${leftPercents}%`;
+        thumb.style.left = persentValue;
+        progress.style.width = persentValue;
       }
 
       document.addEventListener('pointerup', () => {
