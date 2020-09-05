@@ -4,6 +4,7 @@ export default class RibbonMenu {
   constructor(categories) {
     this.categories = categories;
     this.elem = this._makeRibbonMenu();
+    this.value = categories[0];
 
     this._makeScrollEventHandler(this.elem);
     this._makeChoseEventHandler(this.elem);
@@ -29,6 +30,7 @@ export default class RibbonMenu {
     oRibbonElement.append(oRibbonNav);
     oRibbonElement.insertAdjacentHTML('beforeend', sRightArrow);
 
+    oRibbonNav.firstElementChild.classList.add('ribbon__item_active');
     return oRibbonElement;
   }
 
@@ -69,20 +71,27 @@ export default class RibbonMenu {
 
   _makeChoseEventHandler(elem) {
     let sCurrentItem;
+    let that = this;
     elem.addEventListener('click', (event) => {
       event.preventDefault();
 
       if (event.target.classList.contains('ribbon__item')) {
         event.target.classList.add('ribbon__item_active');
 
-        if (sCurrentItem) {
-          let beforeItem = elem.querySelector(`[data-id=${sCurrentItem}]`);
+        if (that.value.id === "") {
+          let beforeItem = elem.querySelector(`[data-id]`);
+          beforeItem.classList.remove('ribbon__item_active');
+        } else {
+          let beforeItem = elem.querySelector(`[data-id=${that.value.id}]`);
           beforeItem.classList.remove('ribbon__item_active');
         }
-        sCurrentItem = event.target.dataset.id;
+
+        let target = event.target;
+        that.value.id = target.dataset.id;
+        that.value.name = target.textContent;
 
         let eRibbonChosen = new CustomEvent('ribbon-select', {
-          detail: sCurrentItem,
+          detail: that.value.id,
           bubbles: true
         });
         elem.dispatchEvent(eRibbonChosen);

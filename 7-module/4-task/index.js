@@ -70,7 +70,7 @@ export default class StepSlider {
     thumb.ondragstart = () => false;
 
     this.elem.addEventListener('click', (event) => {
-      let nOffsetX = event.pageX - this.elem.offsetLeft;
+      let nOffsetX = event.pageX - Math.round(this.elem.getBoundingClientRect().left);
 
       this._countSteps();
       this._findClosestMark(nOffsetX);
@@ -84,15 +84,15 @@ export default class StepSlider {
 
     thumb.addEventListener('pointerdown', (event) => {
       this._countSteps(); 
-      let currentMouseXoffset = event.pageX - this.elem.offsetLeft;
-      let currentThumbXoffset = thumb.offsetLeft;
+      let currentMouseXoffset = event.pageX - Math.round(this.elem.getBoundingClientRect().left);
+      let currentThumbXoffset = Math.round(thumb.getBoundingClientRect().left);
       delta = currentMouseXoffset - currentThumbXoffset;
 
       this.elem.classList.add('slider_dragging');
 
       document.addEventListener('pointermove', doMove);
       function doMove(event) {
-        currentMouseXoffset = event.pageX - oSlider.offsetLeft;        
+        currentMouseXoffset = event.pageX - Math.round(oSlider.getBoundingClientRect().left);
 
         let leftPercents = Math.round((currentMouseXoffset) * 100 / (that._aStepsX[that._aStepsX.length - 1]));
 
@@ -101,13 +101,15 @@ export default class StepSlider {
         progress.style.width = persentValue;
       }
 
-      document.addEventListener('pointerup', () => {
+      document.addEventListener('pointerup', pointerUp);
+      function pointerUp() {
         that.elem.classList.remove('slider_dragging');
         that._findClosestMark(currentMouseXoffset);
         that._offsetSlider();
         that._generateEvent();
         document.removeEventListener('pointermove', doMove);
-      });
+        document.removeEventListener('pointerup', pointerUp);
+      }
     });
   }
 
