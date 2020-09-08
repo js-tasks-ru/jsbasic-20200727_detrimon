@@ -28,9 +28,11 @@ export default class Main {
     let oSliderHolder = document.querySelector('[data-slider-holder]');
     oSliderHolder.append(oStepSlider.elem);
 
-    oStepSlider._countSteps();
-    oStepSlider._findClosestMark(oStepSlider._aStepsX[oStepSlider.value]);
-    oStepSlider._offsetSlider();
+    oSliderHolder.addEventListener('load', () => {
+      oStepSlider._countSteps();
+      oStepSlider._findClosestMark(oStepSlider._aStepsX[oStepSlider.value]);
+      oStepSlider._offsetSlider();
+    });
 
     let oCartIcon = new CartIcon();
     let oCartIconHolder = document.querySelector('[data-cart-icon-holder]');
@@ -38,11 +40,10 @@ export default class Main {
 
     let oCart = new Cart(oCartIcon);
 
-    let response = await fetch('products.json')
+    let response = await fetch('products.json');
     let aProducts = await response.json();
-    this.products = aProducts;
 
-    let oProductsGrid = new ProductsGrid(this.products);
+    let oProductsGrid = new ProductsGrid(aProducts);
 
     let oProductsGridHolder = document.querySelector('[data-products-grid-holder]');
     oProductsGridHolder.firstElementChild.remove();
@@ -55,19 +56,37 @@ export default class Main {
       category: oRibbonMenu.value.id
     });
 
-    let oBody = document.body;
-    // this.oBody = document.querySelector('body');
-    // this.oBody.addEventListener('product-add', productAdd.bind(this));
-    // function productAdd(event) {
-    oBody.addEventListener('product-add', (event) => {
+    document.body.addEventListener('product-add', (event) => {
       let productId = event.detail;
+
       let oProduct;
-      for (let product of this.products) {
+      let allProducts = [...aProducts, ...slides];
+      for (let product of allProducts) {
         if (product.id === productId) {
           oProduct = product;
           break;
         }
       }
+      oCart.addProduct(oProduct);
+    });
+
+    oStepSlider.elem.addEventListener('slider-change', (event) => {
+      oProductsGrid.updateFilter({maxSpiciness: event.detail});
+    });
+
+    oRibbonMenu.elem.addEventListener('ribbon-select', (event) => {
+      oProductsGrid.updateFilter({category: event.detail});
+    });
+
+    let oNoNuts = document.querySelector('#nuts-checkbox');
+    let oVegeterianCheckbox = document.querySelector('#vegeterian-checkbox');
+
+    oNoNuts.addEventListener('change', (event) => {
+      return oNoNuts.checked ? oProductsGrid.updateFilter({noNuts: true}) : oProductsGrid.updateFilter({noNuts: false});      
+    });
+
+    oVegeterianCheckbox.addEventListener('change', (event) => {
+      return oVegeterianCheckbox.checked ? oProductsGrid.updateFilter({vegeterianOnly: true}) : oProductsGrid.updateFilter({vegeterianOnly: false});
     });
   }
 

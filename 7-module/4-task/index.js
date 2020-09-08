@@ -40,6 +40,12 @@ export default class StepSlider {
 
   // Поиск ближайшей отметки относительно текущего положения бегунка (thumb). Результат помещаем в this.value
   _findClosestMark(nOffsetX) {
+    if (nOffsetX > this._aStepsX[this._aStepsX.length - 1]) {
+      nOffsetX = this._aStepsX[this._aStepsX.length - 1];
+    } else if (nOffsetX < 0) {
+      nOffsetX = 0;
+    }
+    
     let index = this._aStepsX.findIndex(elem => elem > nOffsetX);
 
     if (this._aStepsX[index] - nOffsetX > nOffsetX - this._aStepsX[index - 1]) {
