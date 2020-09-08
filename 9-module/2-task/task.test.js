@@ -206,6 +206,8 @@ describe('9-module-2-task', () => {
     it('товары должны быть отфильтрованы по полю noNuts', async function() {
       await main.render();
 
+      resetFilters();
+
       let nutsCheckbox = document.getElementById('nuts-checkbox');
       nutsCheckbox.checked = true;
 
@@ -288,4 +290,23 @@ describe('9-module-2-task', () => {
     });
   });
 
+  function resetFilters() {
+    let slider = document.querySelector('.slider');
+    slider.dispatchEvent(new CustomEvent('slider-change', { detail: 5, bubbles: true }));
+
+    let vegetarianCheckbox = document.getElementById('vegeterian-checkbox');
+      vegetarianCheckbox.checked = false;
+    vegetarianCheckbox
+      .dispatchEvent(new Event('change', { bubbles: true }));
+
+    let ribbon = document.querySelector('.ribbon');
+    ribbon.dispatchEvent(new CustomEvent('ribbon-select', { detail: '', bubbles: true }));
+
+    let nutsCheckbox = document.getElementById('nuts-checkbox');
+      nutsCheckbox.checked = true;
+
+    nutsCheckbox
+      .dispatchEvent(new Event('change', { bubbles: true }));
+  }
+  
 });
