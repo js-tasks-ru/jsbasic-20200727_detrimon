@@ -35,7 +35,7 @@ export default class StepSlider {
     let thumb = this.elem.querySelector('.slider__thumb');
     let progress = this.elem.querySelector('.slider__progress');
 
-    let leftPercents = this._aStepsX[this.value] * 100 / (this._aStepsX[this._aStepsX.length - 1] - this._aStepsX[0]);
+    let leftPercents = Math.round(this._aStepsX[this.value] * 100 / (this._aStepsX[this._aStepsX.length - 1] - this._aStepsX[0]));
 
     thumb.style.left = `${leftPercents}%`;
     progress.style.width = `${leftPercents}%`;
